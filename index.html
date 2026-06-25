@@ -1,0 +1,1605 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EmpreMark</title>
+<link rel="icon" type="image/png" sizes="64x64" href="https://drive.google.com/thumbnail?id=1pECimyf6GZ7mx2Q5mUFO865YAG9rQ9-D&sz=w64">
+
+<style>
+:root{
+    --bg:#f5f7fb;
+    --ink:#182033;
+    --muted:#687386;
+    --panel:#ffffff;
+    --panel-2:#eef3fb;
+    --line:#dfe6f1;
+    --primary:#0B336E;
+    --primary-dark:#082754;
+    --success:#629746;
+    --danger:#dc2626;
+    --warning:#f59e0b;
+    --shadow:0 18px 45px rgba(24,32,51,.12);
+}
+
+*{ box-sizing:border-box; }
+
+body{
+    margin:0;
+    font-family:system-ui, sans-serif;
+    background:
+        linear-gradient(180deg, rgba(11,51,110,.08) 0, rgba(245,247,251,0) 260px),
+        var(--bg);
+    color:var(--ink);
+}
+
+body.app-loading #loader{
+    display:flex !important;
+    opacity:1 !important;
+}
+
+body.app-loading #login,
+body.app-loading #app{
+    display:none !important;
+}
+
+/* 1. PANTALLA DE CARGANDO */
+#loader{
+    position:fixed;
+    inset:0;
+    z-index:30;
+    background:
+        radial-gradient(circle at 60% 45%, rgba(98,151,70,.24), transparent 28%),
+        linear-gradient(135deg, #0B336E 0%, #082754 62%, #0B336E 100%);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    transition:opacity 0.25s;
+}
+
+.loader-card{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:16px;
+    padding:28px;
+    color:white;
+}
+
+.loader-logo{
+    width:210px;
+    max-width:80vw;
+    height:auto;
+    border-radius:30px;
+    object-fit:contain;
+    background:rgba(255,255,255,.92);
+    padding:12px;
+    box-shadow:0 22px 60px rgba(0,0,0,.25);
+}
+
+.loader-spinner{
+    width:42px;
+    height:42px;
+    border:4px solid rgba(255,255,255,.28);
+    border-top-color:var(--success);
+    border-radius:50%;
+    animation:girar .9s linear infinite;
+}
+
+@keyframes girar{
+    to{ transform:rotate(360deg); }
+}
+
+/* 2. INICIO DE SESION */
+#login{
+    display:none;
+    min-height:100vh;
+    padding:32px 20px;
+    background:
+        radial-gradient(circle at 88% 18%, rgba(98,151,70,.20), transparent 26%),
+        linear-gradient(135deg, #41642f 0%, #c0e9ab 34%, #f5f7fb 34%, #f5f7fb 100%);
+}
+
+.login-shell{
+    width:min(960px, 100%);
+    min-height:560px;
+    margin:0 auto;
+    display:grid;
+    grid-template-columns:1.05fr .95fr;
+    overflow:hidden;
+    border:1px solid var(--line);
+    border-radius:24px;
+    background:var(--panel);
+    box-shadow:var(--shadow);
+}
+
+.login-brand{
+    padding:44px;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    background:
+        radial-gradient(circle at 72% 44%, rgba(98,151,70,.26), transparent 22%),
+        linear-gradient(160deg, #0B336E 0%, #082754 72%);
+    color:white;
+}
+
+.login-logo{
+    display:block;
+    width:210px;
+    max-width:72%;
+    margin:24px auto 8px;
+    border-radius:24px;
+    background:rgba(255,255,255,.92);
+    padding:10px;
+    box-shadow:0 16px 38px rgba(0,0,0,.22);
+}
+
+.login-brand h1{
+    margin:0;
+    font-size:clamp(34px, 6vw, 56px);
+    line-height:1;
+}
+
+.login-brand p{
+    max-width:360px;
+    margin:16px 0 0;
+    color:#dbeafe;
+    font-size:17px;
+}
+
+.login-badge{
+    width:max-content;
+    padding:8px 12px;
+    border-radius:999px;
+    background:rgba(255,255,255,.16);
+}
+
+.login-form{
+    padding:44px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+}
+
+.login-form h2{
+    margin:0 0 6px;
+    font-size:30px;
+}
+
+.hint,
+.login-form .hint{
+    margin:0 0 20px;
+    color:var(--muted);
+}
+
+input, select, textarea{
+    width:100%;
+    padding:12px 14px;
+    margin:7px 0;
+    border:1px solid var(--line);
+    border-radius:12px;
+    background:#fff;
+    color:var(--ink);
+    font:inherit;
+    outline:none;
+}
+
+input:focus, select:focus, textarea:focus{
+    border-color:var(--primary);
+    box-shadow:0 0 0 3px rgba(11,51,110,.14);
+}
+
+textarea{
+    min-height:90px;
+    resize:vertical;
+}
+
+button{
+    padding:10px 16px;
+    border:none;
+    border-radius:12px;
+    background:var(--primary);
+    color:white;
+    cursor:pointer;
+    font:inherit;
+    font-weight:700;
+    transition:transform .15s, filter .15s, background .15s;
+}
+
+button:hover{
+    filter:brightness(1.06);
+    transform:translateY(-1px);
+}
+
+.btn-success{ background:var(--success); }
+.btn-danger{ background:var(--danger); }
+.btn-muted{ background:#64748b; }
+.btn-warning{ background:var(--warning); color:#241600; }
+
+.button-row{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-top:10px;
+}
+
+.seller-option{
+    margin:10px 0 12px;
+    padding:12px;
+    display:flex;
+    gap:10px;
+    align-items:flex-start;
+    border:1px solid var(--line);
+    border-radius:14px;
+    background:var(--panel-2);
+}
+
+.seller-option input{
+    width:auto;
+    margin:4px 0 0;
+    accent-color:var(--success);
+}
+
+.seller-option strong{
+    display:block;
+    margin-bottom:2px;
+}
+
+.seller-option span{
+    color:var(--muted);
+    font-size:14px;
+}
+
+#app{ display:none; }
+
+/* 3. PAGINA PRINCIPAL CON PRODUCTOS */
+#header{
+    position:sticky;
+    top:0;
+    z-index:12;
+    padding:14px 24px;
+    background:rgba(11,51,110,.96);
+    backdrop-filter:blur(14px);
+    border-bottom:3px solid var(--success);
+    display:flex;
+    gap:12px;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.brand-mark{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    color:white;
+}
+
+.brand-mark img{
+    width:42px;
+    height:42px;
+    border-radius:10px;
+    object-fit:contain;
+    background:white;
+    padding:3px;
+}
+
+#header h2{
+    margin:0;
+    font-size:22px;
+}
+
+.header-actions{
+    display:flex;
+    gap:8px;
+    align-items:center;
+}
+
+.main-page{
+    width:min(1180px, calc(100% - 32px));
+    margin:0 auto;
+    padding:26px 0 48px;
+}
+
+.market-hero{
+    display:grid;
+    grid-template-columns:1fr auto;
+    gap:16px;
+    align-items:end;
+    margin-bottom:18px;
+    padding:22px;
+    border-radius:22px;
+    background:
+        linear-gradient(135deg, rgba(11,51,110,.10), rgba(98,151,70,.08)),
+        #fff;
+    border:1px solid var(--line);
+}
+
+.market-hero h1{
+    margin:0;
+    font-size:clamp(30px, 4vw, 48px);
+    line-height:1.05;
+}
+
+.market-hero p{
+    margin:10px 0 0;
+    color:var(--muted);
+    max-width:620px;
+}
+
+.market-count{
+    padding:12px 16px;
+    border-radius:16px;
+    background:#fff;
+    border:1px solid var(--line);
+    box-shadow:0 10px 25px rgba(24,32,51,.06);
+    color:var(--muted);
+    white-space:nowrap;
+}
+
+#categorias{
+    display:flex;
+    gap:12px;
+    padding:12px 0 18px;
+    overflow-x:auto;
+}
+
+#categorias button{
+    flex:0 0 auto;
+    background:#fff;
+    color:var(--ink);
+    border:1px solid var(--line);
+}
+
+#categorias button.activa{
+    background:var(--primary);
+    border-color:var(--primary);
+    color:white;
+}
+
+#categorias button:nth-last-child(1){
+    border-color:rgba(98,151,70,.5);
+}
+
+#listaGlobal{
+    display:grid;
+    grid-template-columns:repeat(4, minmax(0, 1fr));
+    gap:18px;
+}
+
+@media(max-width:1100px){
+    #listaGlobal{ grid-template-columns:repeat(3, minmax(0, 1fr)); }
+}
+
+@media(max-width:800px){
+    .login-shell{ grid-template-columns:1fr; }
+    .login-brand{ min-height:280px; }
+    .market-hero{ grid-template-columns:1fr; }
+    #listaGlobal{ grid-template-columns:repeat(2, minmax(0, 1fr)); }
+    .account-panel{ grid-template-columns:1fr; }
+    .account-nav{
+        position:sticky;
+        top:0;
+        z-index:1;
+        display:flex;
+        gap:8px;
+        align-items:center;
+        overflow-x:auto;
+    }
+    .account-nav h3{ margin:0 10px 0 0; white-space:nowrap; }
+    .account-nav button{
+        width:auto;
+        white-space:nowrap;
+        margin-bottom:0;
+    }
+    .profile-grid{ grid-template-columns:1fr; }
+}
+
+@media(max-width:600px){
+    #header{ padding:12px 14px; }
+    .main-page{ width:min(100% - 20px, 1180px); }
+    .login-brand,
+    .login-form{ padding:28px 22px; }
+    #listaGlobal{ grid-template-columns:1fr; }
+    #panel-vendedor,
+    #perfil-panel{ width:auto; }
+    #panel-vendedor{
+        bottom:78px;
+    }
+}
+
+.producto{
+    min-width:0;
+    background:var(--panel);
+    padding:12px;
+    border:1px solid var(--line);
+    border-radius:18px;
+    box-shadow:0 12px 28px rgba(24,32,51,.08);
+}
+
+.producto img.producto-img{
+    width:100%;
+    height:180px;
+    object-fit:cover;
+    border-radius:14px;
+    background:#e2e8f0;
+}
+
+.producto h4{
+    margin:12px 0 6px;
+    font-size:17px;
+    overflow-wrap:anywhere;
+}
+
+.producto p{
+    margin:6px 0;
+    color:var(--muted);
+    overflow-wrap:anywhere;
+}
+
+.producto-actions{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-top:10px;
+}
+
+.vendedor-link{
+    color:var(--primary);
+    cursor:pointer;
+    font-weight:600;
+}
+
+.logo-mini{
+    width:40px;
+    height:40px;
+    border-radius:50%;
+    object-fit:cover;
+    background:#e2e8f0;
+}
+
+/* 4. APARTADO RETRACTIL PARA VENDEDORES */
+.herramientas-vendedor{
+    display:none;
+}
+
+.seller-toggle{
+    position:fixed;
+    right:20px;
+    bottom:20px;
+    z-index:13;
+    display:flex;
+    gap:8px;
+    align-items:center;
+    box-shadow:var(--shadow);
+}
+
+#panel-vendedor{
+    position:fixed;
+    bottom:78px;
+    right:20px;
+    z-index:14;
+    background:var(--panel);
+    padding:18px;
+    border:1px solid var(--line);
+    border-radius:18px;
+    width:320px;
+    display:block;
+    opacity:0;
+    pointer-events:none;
+    transform:translateY(16px) scale(.98);
+    transition:opacity .2s, transform .2s;
+    box-shadow:var(--shadow);
+}
+
+#panel-vendedor.abierto{
+    opacity:1;
+    pointer-events:auto;
+    transform:translateY(0) scale(1);
+}
+
+.panel-title{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:12px;
+    margin-bottom:8px;
+}
+
+.panel-title h3{
+    margin:0;
+}
+
+.icon-button{
+    width:34px;
+    height:34px;
+    padding:0;
+    border-radius:50%;
+    display:grid;
+    place-items:center;
+    background:#eef2f7;
+    color:var(--ink);
+}
+
+#panel-vendedor h3,
+#perfil-panel h3,
+#perfil-publico h3{
+    margin-top:0;
+}
+
+/* 5. PANEL DE CUENTA CON SECCIONES */
+#perfil-panel{
+    position:fixed;
+    top:0;
+    left:0;
+    z-index:20;
+    width:min(760px, 100%);
+    height:100%;
+    background:#f8fafc;
+    padding:0;
+    display:none;
+    overflow:auto;
+    border-right:1px solid var(--line);
+    box-shadow:18px 0 45px rgba(24,32,51,.18);
+}
+
+.account-panel{
+    min-height:100%;
+    display:grid;
+    grid-template-columns:210px 1fr;
+}
+
+.account-nav{
+    padding:22px;
+    background:var(--primary);
+    color:white;
+}
+
+.account-nav h3{
+    margin:0 0 18px;
+}
+
+.account-nav button{
+    width:100%;
+    margin-bottom:8px;
+    background:rgba(255,255,255,.12);
+    text-align:left;
+}
+
+.account-nav button.activa{
+    background:var(--success);
+}
+
+.account-content{
+    padding:24px;
+}
+
+.profile-section{
+    display:none;
+    background:white;
+    border:1px solid var(--line);
+    border-radius:18px;
+    padding:20px;
+    box-shadow:0 14px 32px rgba(24,32,51,.08);
+}
+
+.profile-section.activa{
+    display:block;
+}
+
+.profile-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+}
+
+.field-wide{
+    grid-column:1 / -1;
+}
+
+.profile-actions{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-top:14px;
+}
+
+#perfil-publico{
+    display:none;
+    padding:18px;
+    margin-bottom:18px;
+    border:1px solid var(--line);
+    border-radius:18px;
+    background:#fff;
+    box-shadow:0 12px 28px rgba(24,32,51,.06);
+}
+
+.perfil-header{
+    display:flex;
+    gap:14px;
+    align-items:center;
+}
+
+.perfil-header img{
+    width:74px;
+    height:74px;
+    border-radius:50%;
+    object-fit:cover;
+    background:#e2e8f0;
+}
+
+.perfil-placeholder{
+    width:74px;
+    height:74px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#e2e8f0;
+    color:var(--muted);
+    font-size:28px;
+    font-weight:700;
+}
+
+.mensaje-vacio{
+    grid-column:1 / -1;
+    padding:30px;
+    text-align:center;
+    color:var(--muted);
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:18px;
+}
+
+/* ===== RESPONSIVE TOTAL ===== */
+img{max-width:100%;height:auto}
+#header{flex-wrap:wrap}
+.header-actions{display:flex;flex-wrap:wrap;gap:8px}
+.login-shell{width:min(1200px,95%)}
+#listaGlobal{
+ display:grid !important;
+ grid-template-columns:repeat(auto-fit,minmax(280px,1fr)) !important;
+ gap:20px;
+}
+.producto img.producto-img{
+ aspect-ratio:1/1;
+ height:auto;
+ object-fit:cover;
+}
+#panel-vendedor{width:min(95vw,400px)}
+.account-panel{grid-template-columns:minmax(180px,220px) 1fr}
+
+@media (max-width:992px){
+ .login-shell{grid-template-columns:1fr !important}
+ .market-hero{grid-template-columns:1fr !important;text-align:center}
+ .account-panel{grid-template-columns:1fr !important}
+ .profile-grid{grid-template-columns:1fr !important}
+ .account-nav{display:flex;overflow:auto;gap:10px;padding:15px}
+ .account-nav button{width:auto;white-space:nowrap}
+}
+
+@media (max-width:768px){
+ #header{padding:10px;justify-content:center}
+ .brand-mark,.header-actions{width:100%;justify-content:center}
+ .button-row{flex-direction:column}
+ .button-row button{width:100%}
+ #perfil-panel{width:100% !important}
+ #panel-vendedor{width:95%;right:2.5%}
+ .perfil-header{flex-direction:column;text-align:center}
+}
+
+@media (max-width:480px){
+ .market-hero h1{font-size:22px}
+ .seller-toggle{
+   width:60px;height:60px;border-radius:50%;
+ }
+}
+
+@media (min-width:1600px){
+ #listaGlobal{
+   grid-template-columns:repeat(auto-fit,minmax(320px,1fr)) !important;
+ }
+}
+
+
+/* CORRECCIONES SOLICITADAS */
+.main-page{
+ width:98% !important;
+ max-width:1900px !important;
+}
+
+#listaGlobal{
+ grid-template-columns:repeat(6,minmax(180px,1fr)) !important;
+ justify-content:start !important;
+}
+
+.producto{
+ padding:10px !important;
+}
+
+.producto img.producto-img{
+ height:180px !important;
+ object-fit:cover !important;
+}
+
+@media(max-width:1400px){#listaGlobal{grid-template-columns:repeat(5,minmax(180px,1fr)) !important;}}
+@media(max-width:1200px){#listaGlobal{grid-template-columns:repeat(4,minmax(180px,1fr)) !important;}}
+@media(max-width:900px){#listaGlobal{grid-template-columns:repeat(3,minmax(180px,1fr)) !important;}}
+@media(max-width:700px){#listaGlobal{grid-template-columns:repeat(2,minmax(160px,1fr)) !important;}}
+@media(max-width:500px){#listaGlobal{grid-template-columns:1fr !important;}}
+
+</style>
+</head>
+
+<body class="app-loading">
+
+<div id="loader">
+    <div class="loader-card">
+        <img class="loader-logo" src="https://drive.google.com/thumbnail?id=1lNP3JLNTdinTMpsmUvLkcYQkchpmvQux&sz=w1000" alt="Logo EmpreMark">
+        <div class="loader-spinner"></div>
+        <strong>Cargando EmpreMark...</strong>
+    </div>
+</div>
+
+<div id="login">
+    <div class="login-shell">
+        <section class="login-brand">
+            <div>
+                <div class="login-badge">Mercado local</div>
+                <h1>EmpreMark</h1>
+                <img class="login-logo" src="https://drive.google.com/thumbnail?id=1lNP3JLNTdinTMpsmUvLkcYQkchpmvQux&sz=w1000" alt="Logo EmpreMark">
+                <p>Compra, vende y encuentra productos cercanos con una experiencia simple y ordenada.</p>
+            </div>
+            <strong>Ropa, tecnología, comida y hogar</strong>
+        </section>
+
+        <section class="login-form">
+            <h2>Bienvenido</h2>
+            <p class="hint">Ingresa con tu cuenta o crea una nueva.</p>
+
+            <input id="user" placeholder="Usuario" autocomplete="username">
+            <input id="pass" type="password" placeholder="Contraseña" autocomplete="current-password">
+
+            <div class="button-row">
+                <button onclick="iniciarSesion()">Iniciar sesión</button>
+                <button onclick="registrarse()" class="btn-success">Registrarse</button>
+            </div>
+        </section>
+    </div>
+</div>
+
+<div id="app">
+    <header id="header">
+        <div class="brand-mark">
+            <img src="https://drive.google.com/thumbnail?id=1lNP3JLNTdinTMpsmUvLkcYQkchpmvQux&sz=w1000" alt="Logo EmpreMark">
+            <h2>EmpreMark</h2>
+        </div>
+        <div class="header-actions">
+            <button onclick="abrirPerfil()" title="Configuración de cuenta">Cuenta</button>
+            <button onclick="cerrarSesion()" class="btn-muted">Salir</button>
+        </div>
+    </header>
+
+    <main class="main-page">
+        <section class="market-hero">
+            <div>
+                <h1>Productos disponibles</h1>
+                <p>Explora publicaciones de vendedores y contacta directamente por WhatsApp.</p>
+            </div>
+            <div class="market-count" id="contadorProductos">0 productos</div>
+        </section>
+
+        <section id="categorias" aria-label="Categorías">
+            <button onclick="filtrar('todas', this)" class="activa">Todas</button>
+            <button onclick="filtrar('ropa', this)">Ropa</button>
+            <button onclick="filtrar('tecnologia', this)">Tecnología</button>
+            <button onclick="filtrar('comida', this)">Comida</button>
+            <button onclick="filtrar('hogar', this)">Hogar</button>
+            <button onclick="filtrar('otros', this)">Otros</button>
+        </section>
+
+        <section id="perfil-publico"></section>
+        <section id="listaGlobal" aria-label="Productos"></section>
+    </main>
+
+    <div id="herramientas-vendedor" class="herramientas-vendedor">
+        <button class="seller-toggle" onclick="togglePanelVendedor()">Vender</button>
+
+        <div id="panel-vendedor">
+            <div class="panel-title">
+                <h3>Subir producto</h3>
+                <button class="icon-button" onclick="cerrarPanelVendedor()" title="Cerrar">x</button>
+            </div>
+
+            <input id="productoNombre" placeholder="Nombre">
+            <input id="productoPrecio" type="number" min="0" step="0.01" placeholder="Precio">
+            <select id="categoria">
+                <option value="ropa">Ropa</option>
+                <option value="tecnologia">Tecnología</option>
+                <option value="comida">Comida</option>
+                <option value="hogar">Hogar</option>
+                <option value="otros">Otros</option>
+            </select>
+
+            <input type="file" id="productoImagen" accept="image/*">
+            <button onclick="agregarProducto()">Subir producto</button>
+        </div>
+    </div>
+
+    <div id="perfil-panel">
+        <div class="account-panel">
+            <aside class="account-nav">
+                <h3>Mi cuenta</h3>
+                <button class="activa" onclick="mostrarSeccionCuenta('perfil', this)">Perfil</button>
+                <button onclick="mostrarSeccionCuenta('ventas', this)">Ventas</button>
+                <button onclick="mostrarSeccionCuenta('ajustes', this)">Ajustes</button>
+                <button onclick="cerrarPerfil()" class="btn-muted">Cerrar</button>
+            </aside>
+
+            <div class="account-content">
+                <section class="profile-section activa" id="seccion-perfil">
+                    <h3>Perfil de vendedor</h3>
+
+                    <label class="seller-option">
+                        <input type="checkbox" id="cuentaVendedora">
+                        <span>
+                            <strong>Quiero vender productos</strong>
+                            Activa el botón Vender. Si lo desactivas, tus productos publicados no se borran.
+                        </span>
+                    </label>
+
+                    <div class="profile-grid">
+                        <input id="empresaNombre" placeholder="Empresa">
+                        <input id="empresaTelefono" placeholder="WhatsApp, ejemplo: 51999999999">
+                        <input type="file" id="empresaLogo" accept="image/*" class="field-wide">
+                        <textarea id="empresaDesc" class="field-wide" placeholder="Descripción"></textarea>
+                    </div>
+
+                    <div class="profile-actions">
+                        <button onclick="guardarPerfil()">Guardar</button>
+                        <button onclick="cerrarPerfil()" class="btn-muted">Cerrar</button>
+                    </div>
+                </section>
+
+                <section class="profile-section" id="seccion-ventas">
+                    <h3>Ventas</h3>
+                    <p class="hint">Aquí puedes activar la venta desde Perfil y luego publicar productos con el botón Vender.</p>
+                    <button onclick="mostrarSeccionCuenta('perfil')">Ir al perfil</button>
+                </section>
+
+                <section class="profile-section" id="seccion-ajustes">
+                    <h3>Ajustes</h3>
+                    <p class="hint">Opciones generales de la cuenta.</p>
+                    <button onclick="eliminarCuenta()" class="btn-danger">Eliminar cuenta</button>
+                </section>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+let categoriaActual = "todas";
+let perfilActivo = null;
+const TIEMPO_LOADER_MS = 1000;
+
+document.addEventListener("DOMContentLoaded", () => {
+    prepararPantallaInicial();
+
+    setTimeout(() => {
+        iniciarAplicacion();
+    }, TIEMPO_LOADER_MS);
+});
+
+window.addEventListener("error", evento => {
+    console.error("Error de inicio:", evento.error || evento.message);
+
+    if (document.body.classList.contains("app-loading")) {
+        mostrarLogin();
+        ocultarLoader();
+    }
+});
+
+function iniciarAplicacion() {
+    try {
+        migrarDatosViejos();
+
+        if (obtenerSesion()) {
+            entrarApp();
+        } else {
+            mostrarLogin();
+        }
+    } catch (error) {
+        console.error("No se pudo iniciar EmpreMark:", error);
+        mostrarLogin();
+    } finally {
+        ocultarLoader();
+    }
+}
+
+function prepararPantallaInicial() {
+    document.body.classList.add("app-loading");
+
+    ["loader", "login", "app"].forEach(id => {
+        const elemento = document.getElementById(id);
+        if (elemento) elemento.removeAttribute("style");
+    });
+
+    const loader = document.getElementById("loader");
+    const login = document.getElementById("login");
+    const app = document.getElementById("app");
+
+    loader.style.display = "flex";
+    loader.style.opacity = "1";
+    login.style.display = "none";
+    app.style.display = "none";
+}
+
+function ocultarLoader() {
+    document.body.classList.remove("app-loading");
+    document.getElementById("loader").style.opacity = "0";
+    setTimeout(() => {
+        document.getElementById("loader").style.display = "none";
+    }, 250);
+}
+
+function mostrarLogin() {
+    document.body.classList.remove("app-loading");
+    document.getElementById("app").style.display = "none";
+    document.getElementById("login").style.display = "block";
+}
+
+function leerJSON(clave, valorInicial) {
+    try {
+        return JSON.parse(localStorage.getItem(clave)) || valorInicial;
+    } catch {
+        return valorInicial;
+    }
+}
+
+function guardarJSON(clave, valor) {
+    try {
+        localStorage.setItem(clave, JSON.stringify(valor));
+        return true;
+    } catch (error) {
+        if (error?.name === "QuotaExceededError") {
+            compactarAlmacenamiento();
+
+            try {
+                localStorage.setItem(clave, JSON.stringify(valor));
+                return true;
+            } catch {
+                alert("El almacenamiento del navegador está lleno. Borra algunos productos con imágenes grandes o limpia los datos del sitio desde la consola con localStorage.clear().");
+                return false;
+            }
+        }
+
+        throw error;
+    }
+}
+
+function compactarAlmacenamiento() {
+    const sesion = leerJSON("sesion", null);
+    if (sesion?.user) {
+        localStorage.setItem("sesion", JSON.stringify({ user: sesion.user }));
+    }
+
+    const usuarios = leerJSON("usuarios", []);
+    let cambio = false;
+
+    usuarios.forEach(usuario => {
+        if (Array.isArray(usuario.productos) && usuario.productos.some(producto => producto.imagen)) {
+            usuario.productos = usuario.productos.map(producto => ({
+                id: producto.id,
+                nombre: producto.nombre,
+                precio: producto.precio,
+                categoria: producto.categoria,
+                contacto: producto.contacto,
+                dueno: producto.dueno || usuario.user
+            }));
+            cambio = true;
+        }
+    });
+
+    if (cambio) {
+        localStorage.setItem("usuarios", JSON.stringify(usuarios));
+    }
+}
+
+function crearId() {
+    return Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+}
+
+function obtenerSesion() {
+    return leerJSON("sesion", null);
+}
+
+function crearSesionLigera(usuario) {
+    return { user: usuario.user };
+}
+
+function guardarSesion(usuario) {
+    return guardarJSON("sesion", crearSesionLigera(usuario));
+}
+
+function obtenerUsuarioSesion() {
+    const sesion = obtenerSesion();
+    if (!sesion?.user) return null;
+
+    const usuarios = leerJSON("usuarios", []);
+    return usuarios.find(usuario => usuario.user === sesion.user) || null;
+}
+
+function obtenerNombreVendedor(vendedor) {
+    return vendedor?.empresa || vendedor?.user || "Vendedor";
+}
+
+function normalizarTelefono(valor) {
+    return valor.replace(/\D/g, "");
+}
+
+function migrarDatosViejos() {
+    const usuarios = leerJSON("usuarios", []);
+    const productos = leerJSON("productosGlobal", []);
+    const claveDuenoVieja = "due\u00c3\u00b1o";
+    let cambio = false;
+
+    usuarios.forEach(usuario => {
+        if (typeof usuario.esVendedor !== "boolean") {
+            usuario.esVendedor = usuario.rol === "vendedor";
+            cambio = true;
+        }
+
+        if (typeof usuario.telefono !== "string") {
+            usuario.telefono = "";
+            cambio = true;
+        }
+
+        if (!Array.isArray(usuario.productos)) {
+            usuario.productos = [];
+            cambio = true;
+        }
+
+        usuario.productos.forEach(producto => {
+            if (!producto.id) {
+                producto.id = crearId();
+                cambio = true;
+            }
+
+            if (producto[claveDuenoVieja] && !producto.dueno) {
+                producto.dueno = producto[claveDuenoVieja];
+                delete producto[claveDuenoVieja];
+                cambio = true;
+            }
+        });
+
+        if (usuario.productos.some(producto => producto.imagen)) {
+            usuario.productos = usuario.productos.map(producto => ({
+                id: producto.id,
+                nombre: producto.nombre,
+                precio: producto.precio,
+                categoria: producto.categoria,
+                contacto: producto.contacto,
+                dueno: producto.dueno || usuario.user
+            }));
+            cambio = true;
+        }
+    });
+
+    productos.forEach(producto => {
+        if (!producto.id) {
+            producto.id = crearId();
+            cambio = true;
+        }
+
+        if (producto[claveDuenoVieja] && !producto.dueno) {
+            producto.dueno = producto[claveDuenoVieja];
+            delete producto[claveDuenoVieja];
+            cambio = true;
+        }
+    });
+
+    if (cambio) {
+        guardarJSON("usuarios", usuarios);
+        guardarJSON("productosGlobal", productos);
+    }
+
+    const sesion = obtenerSesion();
+    const sesionActualizada = usuarios.find(usuario => usuario.user === sesion?.user);
+
+    if (sesionActualizada) {
+        guardarSesion(sesionActualizada);
+    }
+}
+
+function iniciarSesion() {
+    const usuario = document.getElementById("user").value.trim();
+    const pass = document.getElementById("pass").value.trim();
+
+    if (!usuario || !pass) {
+        alert("Completa usuario y contraseña");
+        return;
+    }
+
+    const usuarios = leerJSON("usuarios", []);
+    const userDB = usuarios.find(x => x.user === usuario);
+
+    if (!userDB) return alert("Usuario no existe");
+    if (userDB.pass !== pass) return alert("Contraseña incorrecta");
+
+    guardarSesion(userDB);
+    entrarApp();
+}
+
+function registrarse() {
+    const usuario = document.getElementById("user").value.trim();
+    const pass = document.getElementById("pass").value.trim();
+
+    if (usuario.length < 3) {
+        alert("El usuario debe tener al menos 3 caracteres");
+        return;
+    }
+
+    if (pass.length < 4) {
+        alert("La contraseña debe tener al menos 4 caracteres");
+        return;
+    }
+
+    const usuarios = leerJSON("usuarios", []);
+
+    if (usuarios.find(x => x.user.toLowerCase() === usuario.toLowerCase())) {
+        alert("Ese usuario ya existe");
+        return;
+    }
+
+    const nuevo = {
+        user: usuario,
+        pass,
+        esVendedor: false,
+        productos: [],
+        empresa: "",
+        descripcion: "",
+        logo: "",
+        telefono: ""
+    };
+
+    usuarios.push(nuevo);
+    if (!guardarJSON("usuarios", usuarios)) return;
+    guardarSesion(nuevo);
+
+    entrarApp();
+}
+
+function entrarApp() {
+    const usuario = obtenerUsuarioSesion();
+    if (!usuario) {
+        cerrarSesion();
+        return;
+    }
+
+    document.getElementById("login").style.display = "none";
+    document.getElementById("app").style.display = "block";
+    actualizarHerramientasVendedor(usuario);
+
+    cargarProductosGlobal();
+}
+
+function cerrarSesion() {
+    localStorage.removeItem("sesion");
+    location.reload();
+}
+
+function togglePanelVendedor() {
+    document.getElementById("panel-vendedor").classList.toggle("abierto");
+}
+
+function cerrarPanelVendedor() {
+    document.getElementById("panel-vendedor").classList.remove("abierto");
+}
+
+function actualizarHerramientasVendedor(usuario) {
+    const herramientas = document.getElementById("herramientas-vendedor");
+    const panel = document.getElementById("panel-vendedor");
+    const puedeVender = Boolean(usuario?.esVendedor);
+
+    herramientas.style.display = puedeVender ? "block" : "none";
+
+    if (!puedeVender) {
+        panel.classList.remove("abierto");
+    }
+}
+
+function filtrar(categoria, boton) {
+    categoriaActual = categoria;
+    perfilActivo = null;
+
+    document.querySelectorAll("#categorias button").forEach(item => item.classList.remove("activa"));
+    boton.classList.add("activa");
+
+    document.getElementById("perfil-publico").style.display = "none";
+    cargarProductosGlobal();
+}
+
+function agregarProducto() {
+    const nombre = document.getElementById("productoNombre").value.trim();
+    const precio = document.getElementById("productoPrecio").value.trim();
+    const categoria = document.getElementById("categoria").value;
+    const inputImg = document.getElementById("productoImagen");
+
+    if (!nombre || !precio) {
+        alert("Completa nombre y precio");
+        return;
+    }
+
+    if (Number(precio) <= 0) {
+        alert("El precio debe ser mayor que 0");
+        return;
+    }
+
+    if (!inputImg.files[0]) {
+        alert("Selecciona una imagen");
+        return;
+    }
+
+    const reader = new FileReader();
+
+    reader.onload = e => {
+        const sesion = obtenerSesion();
+        const usuarios = leerJSON("usuarios", []);
+        const userDB = usuarios.find(x => x.user === sesion.user);
+
+        if (!userDB) {
+            alert("No se encontró tu usuario. Vuelve a iniciar sesión.");
+            cerrarSesion();
+            return;
+        }
+
+        const contacto = normalizarTelefono(userDB.telefono || "");
+
+        if (!userDB.esVendedor) {
+            alert("Activa la opción Quiero vender productos en tu perfil.");
+            actualizarHerramientasVendedor(userDB);
+            return;
+        }
+
+        if (contacto.length < 8) {
+            alert("Agrega un WhatsApp válido en tu perfil antes de publicar.");
+            cerrarPanelVendedor();
+            abrirPerfil();
+            return;
+        }
+
+        const nuevo = {
+            id: crearId(),
+            nombre,
+            precio: Number(precio).toFixed(2),
+            contacto,
+            categoria,
+            imagen: e.target.result,
+            dueno: sesion.user
+        };
+
+        userDB.productos.push({
+            id: nuevo.id,
+            nombre: nuevo.nombre,
+            precio: nuevo.precio,
+            contacto: nuevo.contacto,
+            categoria: nuevo.categoria,
+            dueno: nuevo.dueno
+        });
+
+        const global = leerJSON("productosGlobal", []);
+        global.push(nuevo);
+
+        if (!guardarJSON("usuarios", usuarios)) return;
+        if (!guardarJSON("productosGlobal", global)) return;
+        guardarSesion(userDB);
+
+        limpiarFormularioProducto();
+        cerrarPanelVendedor();
+        cargarProductosGlobal();
+    };
+
+    reader.readAsDataURL(inputImg.files[0]);
+}
+
+function limpiarFormularioProducto() {
+    document.getElementById("productoNombre").value = "";
+    document.getElementById("productoPrecio").value = "";
+    document.getElementById("categoria").value = "ropa";
+    document.getElementById("productoImagen").value = "";
+}
+
+function cargarProductosGlobal() {
+    const cont = document.getElementById("listaGlobal");
+    cont.innerHTML = "";
+
+    const productos = leerJSON("productosGlobal", []);
+    const usuarios = leerJSON("usuarios", []);
+    const sesion = obtenerSesion();
+
+    const filtrados = productos.filter(producto => {
+        const coincideCategoria = categoriaActual === "todas" || producto.categoria === categoriaActual;
+        const coincidePerfil = !perfilActivo || producto.dueno === perfilActivo;
+        return coincideCategoria && coincidePerfil;
+    });
+
+    actualizarContadorProductos(filtrados.length);
+
+    if (!filtrados.length) {
+        const vacio = document.createElement("div");
+        vacio.className = "mensaje-vacio";
+        vacio.textContent = "No hay productos para mostrar.";
+        cont.appendChild(vacio);
+        return;
+    }
+
+    filtrados.forEach(producto => {
+        const vendedor = usuarios.find(u => u.user === producto.dueno);
+        cont.appendChild(crearTarjetaProducto(producto, vendedor, sesion));
+    });
+}
+
+function actualizarContadorProductos(total) {
+    const contador = document.getElementById("contadorProductos");
+    if (!contador) return;
+    contador.textContent = total === 1 ? "1 producto" : total + " productos";
+}
+
+function crearTarjetaProducto(producto, vendedor, sesion) {
+    const div = document.createElement("div");
+    div.className = "producto";
+
+    const imagen = document.createElement("img");
+    imagen.className = "producto-img";
+    imagen.src = producto.imagen;
+    imagen.alt = producto.nombre;
+    div.appendChild(imagen);
+
+    const titulo = document.createElement("h4");
+    titulo.textContent = producto.nombre;
+    div.appendChild(titulo);
+
+    const precio = document.createElement("p");
+    precio.textContent = "S/ " + producto.precio;
+    div.appendChild(precio);
+
+    const vendedorLink = document.createElement("p");
+    vendedorLink.className = "vendedor-link";
+    vendedorLink.textContent = obtenerNombreVendedor(vendedor);
+    vendedorLink.onclick = () => verPerfil(producto.dueno);
+    div.appendChild(vendedorLink);
+
+    if (vendedor?.logo) {
+        const logo = document.createElement("img");
+        logo.className = "logo-mini";
+        logo.src = vendedor.logo;
+        logo.alt = "Logo de " + obtenerNombreVendedor(vendedor);
+        div.appendChild(logo);
+    }
+
+    const acciones = document.createElement("div");
+    acciones.className = "producto-actions";
+
+    const contactarBtn = document.createElement("button");
+    contactarBtn.textContent = "Contactar";
+    contactarBtn.onclick = () => contactar(vendedor?.telefono || producto.contacto);
+    acciones.appendChild(contactarBtn);
+
+    if (sesion && producto.dueno === sesion.user) {
+        const eliminarBtn = document.createElement("button");
+        eliminarBtn.className = "btn-danger";
+        eliminarBtn.textContent = "Eliminar";
+        eliminarBtn.onclick = () => eliminar(producto.id);
+        acciones.appendChild(eliminarBtn);
+    }
+
+    div.appendChild(acciones);
+    return div;
+}
+
+function eliminar(productoId) {
+    if (!confirm("¿Eliminar este producto?")) return;
+
+    const sesion = obtenerSesion();
+    let productos = leerJSON("productosGlobal", []);
+    const usuarios = leerJSON("usuarios", []);
+    const userDB = usuarios.find(u => u.user === sesion.user);
+    const producto = productos.find(p => p.id === productoId);
+
+    if (!producto || producto.dueno !== sesion.user) {
+        alert("No puedes eliminar este producto");
+        return;
+    }
+
+    productos = productos.filter(p => p.id !== productoId);
+
+    if (userDB) {
+        userDB.productos = userDB.productos.filter(p => p.id !== productoId);
+        guardarSesion(userDB);
+    }
+
+    guardarJSON("usuarios", usuarios);
+    guardarJSON("productosGlobal", productos);
+    alert("Producto eliminado correctamente");
+    cargarProductosGlobal();
+}
+
+function verPerfil(usuario) {
+    const usuarios = leerJSON("usuarios", []);
+    const vendedor = usuarios.find(u => u.user === usuario);
+
+    if (!vendedor) {
+        alert("No se encontró el perfil del vendedor");
+        return;
+    }
+
+    perfilActivo = usuario;
+    categoriaActual = "todas";
+    document.querySelectorAll("#categorias button").forEach(item => {
+        item.classList.toggle("activa", item.textContent === "Todas");
+    });
+
+    const panel = document.getElementById("perfil-publico");
+    panel.innerHTML = "";
+    panel.style.display = "block";
+
+    const header = document.createElement("div");
+    header.className = "perfil-header";
+
+    if (vendedor.logo) {
+        const logo = document.createElement("img");
+        logo.src = vendedor.logo;
+        logo.alt = "Logo de " + obtenerNombreVendedor(vendedor);
+        header.appendChild(logo);
+    } else {
+        const placeholder = document.createElement("div");
+        placeholder.className = "perfil-placeholder";
+        placeholder.textContent = obtenerNombreVendedor(vendedor).charAt(0).toUpperCase();
+        header.appendChild(placeholder);
+    }
+
+    const info = document.createElement("div");
+
+    const nombre = document.createElement("h3");
+    nombre.textContent = obtenerNombreVendedor(vendedor);
+    info.appendChild(nombre);
+
+    const descripcion = document.createElement("p");
+    descripcion.textContent = vendedor.descripcion || "Este vendedor todavía no agregó una descripción.";
+    info.appendChild(descripcion);
+
+    const cerrar = document.createElement("button");
+    cerrar.className = "btn-muted";
+    cerrar.textContent = "Ver todos";
+    cerrar.onclick = () => {
+        perfilActivo = null;
+        panel.style.display = "none";
+        cargarProductosGlobal();
+    };
+    info.appendChild(cerrar);
+
+    header.appendChild(info);
+    panel.appendChild(header);
+
+    cargarProductosGlobal();
+}
+
+function abrirPerfil() {
+    const panel = document.getElementById("perfil-panel");
+    const usuario = obtenerUsuarioSesion();
+
+    if (!usuario) return;
+
+    panel.style.display = "block";
+    mostrarSeccionCuenta("perfil");
+    document.getElementById("cuentaVendedora").checked = Boolean(usuario.esVendedor);
+    document.getElementById("empresaNombre").value = usuario.empresa || "";
+    document.getElementById("empresaTelefono").value = usuario.telefono || "";
+    document.getElementById("empresaDesc").value = usuario.descripcion || "";
+}
+
+function cerrarPerfil() {
+    document.getElementById("perfil-panel").style.display = "none";
+}
+
+function mostrarSeccionCuenta(seccion, boton) {
+    document.querySelectorAll(".profile-section").forEach(item => {
+        item.classList.toggle("activa", item.id === "seccion-" + seccion);
+    });
+
+    document.querySelectorAll(".account-nav button").forEach(item => {
+        item.classList.remove("activa");
+    });
+
+    if (boton) {
+        boton.classList.add("activa");
+        return;
+    }
+
+    const botonDestino = Array.from(document.querySelectorAll(".account-nav button"))
+        .find(item => item.textContent.trim().toLowerCase() === seccion);
+
+    if (botonDestino) {
+        botonDestino.classList.add("activa");
+    }
+}
+
+function guardarPerfil() {
+    const sesion = obtenerSesion();
+    const usuarios = leerJSON("usuarios", []);
+    const userDB = usuarios.find(u => u.user === sesion.user);
+
+    if (!userDB) {
+        alert("No se encontró tu usuario. Vuelve a iniciar sesión.");
+        cerrarSesion();
+        return;
+    }
+
+    function guardar(img) {
+        const esVendedor = document.getElementById("cuentaVendedora").checked;
+        const telefono = normalizarTelefono(document.getElementById("empresaTelefono").value.trim());
+
+        if (esVendedor && telefono.length < 8) {
+            alert("Agrega un WhatsApp válido para activar la venta.");
+            return;
+        }
+
+        userDB.esVendedor = esVendedor;
+        userDB.empresa = document.getElementById("empresaNombre").value.trim();
+        userDB.telefono = telefono;
+        userDB.descripcion = document.getElementById("empresaDesc").value.trim();
+        if (img) userDB.logo = img;
+
+        if (!guardarJSON("usuarios", usuarios)) return;
+        guardarSesion(userDB);
+
+        alert("Perfil guardado");
+        actualizarHerramientasVendedor(userDB);
+        cerrarPerfil();
+        cargarProductosGlobal();
+    }
+
+    const file = document.getElementById("empresaLogo").files[0];
+
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = e => guardar(e.target.result);
+        reader.readAsDataURL(file);
+    } else {
+        guardar();
+    }
+}
+
+function eliminarCuenta() {
+    if (!confirm("¿Seguro que quieres eliminar tu cuenta? Esta acción también borra tus productos.")) return;
+
+    const sesion = obtenerSesion();
+    let usuarios = leerJSON("usuarios", []);
+    let productos = leerJSON("productosGlobal", []);
+
+    usuarios = usuarios.filter(u => u.user !== sesion.user);
+    productos = productos.filter(p => p.dueno !== sesion.user);
+
+    guardarJSON("usuarios", usuarios);
+    guardarJSON("productosGlobal", productos);
+    localStorage.removeItem("sesion");
+
+    alert("Cuenta eliminada");
+    location.reload();
+}
+
+function contactar(numero) {
+    const limpio = normalizarTelefono(numero);
+
+    if (!limpio) {
+        alert("Este producto no tiene WhatsApp válido");
+        return;
+    }
+
+    window.open("https://wa.me/" + limpio, "_blank");
+}
+</script>
+
+</body>
+</html>
+
