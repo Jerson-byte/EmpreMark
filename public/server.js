@@ -153,4 +153,8 @@ app.delete('/api/productos/:id', async (req, res) => {
 });
 
 const PORT = process.env.PORT || 3000;
+// --- RUTA DESPERTADOR PARA UPTIMEROBOT ---
+app.get('/ping', (req, res) => {
+    res.send('El servidor de EmpreMark está despierto ⏰');
+});
 app.listen(PORT, () => console.log(`🚀 Servidor en puerto ${PORT}`));
