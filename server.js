@@ -1,3 +1,4 @@
+const MongoStore = require('connect-mongo');
 const express = require('express');
 const mongoose = require('mongoose');
 const multer = require('multer');
@@ -16,11 +17,14 @@ app.use(express.json());
 app.use(express.static('public')); 
 app.use('/uploads', express.static('uploads')); 
 
-// REQUISITO: Sesiones -> Quién ha iniciado sesión
+// REQUISITO: Sesiones guardadas directamente en MongoDB
 app.use(session({
     secret: 'clave_secreta_proyecto',
     resave: false,
     saveUninitialized: false,
+    store: MongoStore.create({
+        mongoUrl: process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/empremark'
+    }),
     cookie: { maxAge: 1000 * 60 * 60 * 24 }
 }));
 
